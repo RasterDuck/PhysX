@@ -207,7 +207,8 @@ PX_INLINE void Articulation::setWakeCounter(PxReal counter)
 		if(counter > 0.0f)
 		{
 			mBufferedIsSleeping = 0;
-			markUpdated(Buf::BF_WakeUp | Buf::BF_WakeCounter);
+			markUpdated(PxU32(Buf::BF_WakeUp) | PxU32(Buf::BF_WakeCounter)
+);
 			resetBufferFlag(Buf::BF_PutToSleep);
 		}
 		else
@@ -250,7 +251,8 @@ PX_FORCE_INLINE void Articulation::wakeUpInternal(PxReal wakeCounter)
 	}
 	else
 	{
-		markUpdated(Buf::BF_WakeUp | Buf::BF_WakeCounter);
+		markUpdated(PxU32(Buf::BF_WakeUp) | PxU32(Buf::BF_WakeCounter)
+);
 		resetBufferFlag(Buf::BF_PutToSleep);
 	}
 }
@@ -278,7 +280,8 @@ PX_FORCE_INLINE void Articulation::putToSleep()
 	}
 	else
 	{
-		markUpdated(Buf::BF_PutToSleep | Buf::BF_WakeCounter);
+		markUpdated(PxU32(Buf::BF_PutToSleep) | PxU32(Buf::BF_WakeCounter)
+);
 		resetBufferFlag(Buf::BF_WakeUp);
 	}
 }
@@ -303,7 +306,8 @@ PX_FORCE_INLINE	void Articulation::clearBufferedState()
 
 PX_FORCE_INLINE	void Articulation::clearBufferedSleepStateChange()
 {
-	resetBufferFlag(Buf::BF_WakeUp | Buf::BF_PutToSleep);
+	resetBufferFlag(PxU32(Buf::BF_WakeUp) | PxU32(Buf::BF_PutToSleep)
+);
 }
 
 //--------------------------------------------------------------
@@ -316,7 +320,8 @@ PX_INLINE void Articulation::syncState()
 {
 	// see comments in Body::syncState
 	PX_ASSERT(	(getControlState() != ControlState::eREMOVE_PENDING) || 
-				(mBufferedIsSleeping && (!isBuffered(Buf::BF_WakeUp | Buf::BF_PutToSleep))) );
+				(mBufferedIsSleeping && (!isBuffered(PxU32(Buf::BF_WakeUp) | PxU32(Buf::BF_PutToSleep)
+))) );
 
 	const PxU32 flags = getBufferFlags();
 
@@ -324,7 +329,8 @@ PX_INLINE void Articulation::syncState()
 
 	if((flags & Buf::BF_WakeCounter) == 0)
 		mBufferedWakeCounter = mArticulation.getWakeCounter();
-	else if (!(flags & (Buf::BF_WakeUp | Buf::BF_PutToSleep)))	// if there has been at least one buffered sleep state transition, then there is no use in adjusting the wake counter separately because it will
+	else if (!(flags & (PxU32(Buf::BF_WakeUp) | PxU32(Buf::BF_PutToSleep)
+)))	// if there has been at least one buffered sleep state transition, then there is no use in adjusting the wake counter separately because it will
 																// get done in the sleep state update.
 	{
 		PX_ASSERT(mBufferedWakeCounter == 0.0f);  // a wake counter change is always connected to a sleep state change, except one case: if setWakeCounter(0.0f) was called
@@ -334,7 +340,8 @@ PX_INLINE void Articulation::syncState()
 
 	//----
 
-	if((flags & (Buf::BF_WakeUp | Buf::BF_PutToSleep)) == 0)
+	if((flags & (PxU32(Buf::BF_WakeUp) | PxU32(Buf::BF_PutToSleep)
+)) == 0)
 	{
 		const bool isSimObjectSleeping = mArticulation.isSleeping();
 		if(getControlState() != ControlState::eREMOVE_PENDING)  // we do not want the simulation sleep state to take effect if the object was removed (free standing objects have buffered state sleeping)
@@ -365,7 +372,7 @@ PX_INLINE void Articulation::syncState()
 
 	//----
 
-	if(flags&~(Buf::BF_WakeCounter|Buf::BF_WakeUp|Buf::BF_PutToSleep))  // Optimization to avoid all the if-statements below if possible
+	if(flags&~(PxU32(Buf::BF_WakeCounter)|PxU32(Buf::BF_WakeUp)|Buf::BF_PutToSleep))  // Optimization to avoid all the if-statements below if possible
 	{
 #ifdef USE_NEW_SYSTEM
 		syncExternalDriveIterations();

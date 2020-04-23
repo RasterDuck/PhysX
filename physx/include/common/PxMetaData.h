@@ -186,7 +186,7 @@ namespace physx
 	{ \
 		PxMetaDataEntry tmp = {	#type, 0, PxU32(PX_OFFSET_OF_RT(Class, control)), PxU32(PX_SIZE_OF(Class, control)), \
 							PxU32(PX_OFFSET_OF_RT(Class, count)), PxU32(PX_SIZE_OF(Class, count)), \
-							PxMetaDataFlag::eCONTROL_MASK|PxMetaDataFlag::eEXTRA_DATA|PxMetaDataFlag::eEXTRA_ITEMS|flags|(controlMask & PxMetaDataFlag::eCONTROL_MASK_RANGE) << 16, \
+							PxMetaDataFlag::eCONTROL_MASK|PxMetaDataFlag::eEXTRA_DATA|PxMetaDataFlag::eEXTRA_ITEMS|flags|(PxU32(controlMask) & PxU32(PxMetaDataFlag::eCONTROL_MASK_RANGE)) << 16, \
 							align}; \
 		PX_STORE_METADATA(stream, tmp); \
 	}

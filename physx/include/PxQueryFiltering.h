@@ -132,7 +132,8 @@ to type #PxQueryHitType::eBLOCK when the value of PxHitCallback::nbTouches provi
 struct PxQueryFilterData
 {
 	/** \brief default constructor */
-	explicit PX_INLINE PxQueryFilterData() : flags(PxQueryFlag::eDYNAMIC | PxQueryFlag::eSTATIC)		{}
+	explicit PX_INLINE PxQueryFilterData() : flags(PxU32(PxQueryFlag::eDYNAMIC) | PxU32(PxQueryFlag::eSTATIC)
+)		{}
 
 	/** \brief constructor to set both filter data and filter flags */
 	explicit PX_INLINE PxQueryFilterData(const PxFilterData& fd, PxQueryFlags f) : data(fd), flags(f)	{}

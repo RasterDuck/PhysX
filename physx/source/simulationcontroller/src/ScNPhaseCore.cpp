@@ -151,7 +151,7 @@ static PX_INLINE void callPairLost(Sc::Scene& scene, const ElementSim& e0, const
 
 static PX_INLINE void checkFilterFlags(PxFilterFlags& filterFlags)
 {
-	if((filterFlags & (PxFilterFlag::eKILL | PxFilterFlag::eSUPPRESS)) == (PxFilterFlag::eKILL | PxFilterFlag::eSUPPRESS))
+	if((filterFlags & (PxU32(PxFilterFlag::eKILL) | PxU32(PxFilterFlag::eSUPPRESS))) == (PxU32(PxFilterFlag::eKILL) | PxU32(PxFilterFlag::eSUPPRESS)))
 	{
 #if PX_CHECKED
 		Ps::getFoundation().error(PxErrorCode::eDEBUG_WARNING, __FILE__, __LINE__, "Filtering: eKILL and eSUPPRESS must not be set simultaneously. eSUPPRESS will be used.");
@@ -164,11 +164,11 @@ static PX_FORCE_INLINE PxPairFlags checkRbPairFlags(const ShapeSim& s0, const Sh
 {
 #if PX_CHECKED
 	// we want to avoid to run contact generation for pairs that should not get resolved or have no contact/trigger reports
-	if (!(PxU32(pairFlags) & (PxPairFlag::eSOLVE_CONTACT | ShapeInteraction::CONTACT_REPORT_EVENTS)))
+	if (!(PxU32(pairFlags) & (PxU32(PxPairFlag::eSOLVE_CONTACT) | PxU32(ShapeInteraction::CONTACT_REPORT_EVENTS))))
 	{
 		Ps::getFoundation().error(PxErrorCode::eDEBUG_WARNING, __FILE__, __LINE__, "Filtering: Pair with no contact/trigger reports detected, nor is PxPairFlag::eSOLVE_CONTACT set. It is recommended to suppress/kill such pairs for performance reasons.");
 	}
-	else if(!(pairFlags & (PxPairFlag::eDETECT_DISCRETE_CONTACT | PxPairFlag::eDETECT_CCD_CONTACT)))
+	else if(!(pairFlags & (PxU32(PxPairFlag::eDETECT_DISCRETE_CONTACT) | PxU32(PxPairFlag::eDETECT_CCD_CONTACT))))
 	{
 		Ps::getFoundation().error(PxErrorCode::eDEBUG_WARNING,  __FILE__, __LINE__, "Filtering: Pair did not request either eDETECT_DISCRETE_CONTACT or eDETECT_CCD_CONTACT. It is recommended to suppress/kill such pairs for performance reasons.");
 	}
@@ -189,7 +189,7 @@ static PX_INLINE PxPairFlags checkRbPairFlags(	const ShapeSim& s0, const ShapeSi
 												const Sc::BodySim* bs0, const Sc::BodySim* bs1,
 												PxPairFlags pairFlags, PxFilterFlags filterFlags)
 {
-	if(filterFlags & (PxFilterFlag::eSUPPRESS | PxFilterFlag::eKILL))
+	if(filterFlags & (PxU32(PxFilterFlag::eSUPPRESS) | PxU32(PxFilterFlag::eKILL)))
 		return pairFlags;
 
 	if (bs0 && bs0->isKinematic() && 
@@ -210,7 +210,7 @@ static PX_INLINE PxPairFlags checkRbPairFlags(	const ShapeSim& s0, const ShapeSi
 												bool kine0, bool kine1,
 												PxPairFlags pairFlags, PxFilterFlags filterFlags)
 {
-	if(filterFlags & (PxFilterFlag::eSUPPRESS | PxFilterFlag::eKILL))
+	if(filterFlags & (PxU32(PxFilterFlag::eSUPPRESS) | PxU32(PxFilterFlag::eKILL)))
 		return pairFlags;
 
 	if(kine0 && kine1 && (pairFlags & PxPairFlag::eSOLVE_CONTACT))
@@ -1145,7 +1145,7 @@ Sc::ElementSimInteraction* Sc::NPhaseCore::convert(ElementSimInteraction* pair, 
 	// PT: we need to unregister the old interaction *before* creating the new one, because Sc::NPhaseCore::registerInteraction will use
 	// ElementSim pointers which are the same for both. Since "releaseElementPair" will call the unregister function from
 	// the element's dtor, we don't need to do it explicitly here. Just release the object.
-	releaseElementPair(pair, PairReleaseFlag::eWAKE_ON_LOST_TOUCH | PairReleaseFlag::eBP_VOLUME_REMOVED, 0, removeFromDirtyList, outputs, useAdaptiveForce);
+	releaseElementPair(pair, PxU32(PairReleaseFlag::eWAKE_ON_LOST_TOUCH) | PxU32(PairReleaseFlag::eBP_VOLUME_REMOVED), 0, removeFromDirtyList, outputs, useAdaptiveForce);
 
 	ElementSimInteraction* result = NULL;
 	switch(newType)
@@ -1555,7 +1555,7 @@ public:
 			PX_ASSERT(pair->isReportPair());
 
 			const PxU32 pairFlags = pair->getPairFlags();
-			if ((pairFlags & PxU32(PxPairFlag::eNOTIFY_TOUCH_PERSISTS | PxPairFlag::eDETECT_DISCRETE_CONTACT)) == PxU32(PxPairFlag::eNOTIFY_TOUCH_PERSISTS | PxPairFlag::eDETECT_DISCRETE_CONTACT))
+			if ((pairFlags & PxU32(PxU32(PxPairFlag::eNOTIFY_TOUCH_PERSISTS) | PxU32(PxPairFlag::eDETECT_DISCRETE_CONTACT))) == PxU32(PxU32(PxPairFlag::eNOTIFY_TOUCH_PERSISTS) | PxU32(PxPairFlag::eDETECT_DISCRETE_CONTACT)))
 			{
 				// do not process the pair if only eDETECT_CCD_CONTACT is enabled because at this point CCD did not run yet. Plus the current CCD implementation can not reliably provide eNOTIFY_TOUCH_PERSISTS events
 				// for performance reasons.
@@ -1606,7 +1606,7 @@ void Sc::NPhaseCore::processPersistentContactEvents(PxsContactManagerOutputItera
 			PX_ASSERT(pair->isReportPair());
 
 			const PxU32 pairFlags = pair->getPairFlags();
-			if ((pairFlags & PxU32(PxPairFlag::eNOTIFY_TOUCH_PERSISTS | PxPairFlag::eDETECT_DISCRETE_CONTACT)) == PxU32(PxPairFlag::eNOTIFY_TOUCH_PERSISTS | PxPairFlag::eDETECT_DISCRETE_CONTACT))
+			if ((pairFlags & PxU32(PxU32(PxPairFlag::eNOTIFY_TOUCH_PERSISTS) | PxU32(PxPairFlag::eDETECT_DISCRETE_CONTACT))) == PxU32(PxU32(PxPairFlag::eNOTIFY_TOUCH_PERSISTS) | PxU32(PxPairFlag::eDETECT_DISCRETE_CONTACT)))
 			{
 				// do not process the pair if only eDETECT_CCD_CONTACT is enabled because at this point CCD did not run yet. Plus the current CCD implementation can not reliably provide eNOTIFY_TOUCH_PERSISTS events
 				// for performance reasons.
@@ -1657,7 +1657,7 @@ void Sc::NPhaseCore::processPersistentContactEvents(PxsContactManagerOutputItera
 	//		PX_ASSERT(pair->isReportPair());
 
 	//		const PxU32 pairFlags = pair->getPairFlags();
-	//		if ((pairFlags & PxU32(PxPairFlag::eNOTIFY_TOUCH_PERSISTS | PxPairFlag::eDETECT_DISCRETE_CONTACT)) == PxU32(PxPairFlag::eNOTIFY_TOUCH_PERSISTS | PxPairFlag::eDETECT_DISCRETE_CONTACT))
+	//		if ((pairFlags & PxU32(PxU32(PxPairFlag::eNOTIFY_TOUCH_PERSISTS) | PxU32(PxPairFlag::eDETECT_DISCRETE_CONTACT))) == PxU32(PxU32(PxPairFlag::eNOTIFY_TOUCH_PERSISTS) | PxU32(PxPairFlag::eDETECT_DISCRETE_CONTACT)))
 	//		{
 	//			if (pair->getActorPair() != NULL)
 	//			{
@@ -1947,7 +1947,7 @@ void Sc::NPhaseCore::clearContactReportActorPairs(bool shrinkToZero)
 void Sc::NPhaseCore::addToPersistentContactEventPairs(ShapeInteraction* si)
 {
 	// Pairs which request events which do not get triggered by the sdk and thus need to be tested actively every frame.
-	PX_ASSERT(si->getPairFlags() & (PxPairFlag::eNOTIFY_TOUCH_PERSISTS | ShapeInteraction::CONTACT_FORCE_THRESHOLD_PAIRS));
+	PX_ASSERT(si->getPairFlags() & (PxU32(PxPairFlag::eNOTIFY_TOUCH_PERSISTS) | PxU32(ShapeInteraction::CONTACT_FORCE_THRESHOLD_PAIRS)));
 	PX_ASSERT(si->mReportPairIndex == INVALID_REPORT_PAIR_ID);
 	PX_ASSERT(!si->readFlag(ShapeInteraction::IS_IN_PERSISTENT_EVENT_LIST));
 	PX_ASSERT(!si->readFlag(ShapeInteraction::IS_IN_FORCE_THRESHOLD_EVENT_LIST));
@@ -1975,7 +1975,7 @@ void Sc::NPhaseCore::addToPersistentContactEventPairs(ShapeInteraction* si)
 void Sc::NPhaseCore::addToPersistentContactEventPairsDelayed(ShapeInteraction* si)
 {
 	// Pairs which request events which do not get triggered by the sdk and thus need to be tested actively every frame.
-	PX_ASSERT(si->getPairFlags() & (PxPairFlag::eNOTIFY_TOUCH_PERSISTS | ShapeInteraction::CONTACT_FORCE_THRESHOLD_PAIRS));
+	PX_ASSERT(si->getPairFlags() & (PxU32(PxPairFlag::eNOTIFY_TOUCH_PERSISTS) | PxU32(ShapeInteraction::CONTACT_FORCE_THRESHOLD_PAIRS)));
 	PX_ASSERT(si->mReportPairIndex == INVALID_REPORT_PAIR_ID);
 	PX_ASSERT(!si->readFlag(ShapeInteraction::IS_IN_PERSISTENT_EVENT_LIST));
 	PX_ASSERT(!si->readFlag(ShapeInteraction::IS_IN_FORCE_THRESHOLD_EVENT_LIST));
@@ -1988,7 +1988,7 @@ void Sc::NPhaseCore::addToPersistentContactEventPairsDelayed(ShapeInteraction* s
 
 void Sc::NPhaseCore::removeFromPersistentContactEventPairs(ShapeInteraction* si)
 {
-	PX_ASSERT(si->getPairFlags() & (PxPairFlag::eNOTIFY_TOUCH_PERSISTS | ShapeInteraction::CONTACT_FORCE_THRESHOLD_PAIRS));
+	PX_ASSERT(si->getPairFlags() & (PxU32(PxPairFlag::eNOTIFY_TOUCH_PERSISTS) | PxU32(ShapeInteraction::CONTACT_FORCE_THRESHOLD_PAIRS)));
 	PX_ASSERT(si->readFlag(ShapeInteraction::IS_IN_PERSISTENT_EVENT_LIST));
 	PX_ASSERT(!si->readFlag(ShapeInteraction::IS_IN_FORCE_THRESHOLD_EVENT_LIST));
 	PX_ASSERT(si->hasTouch()); // only pairs which could lose or keep contact should be in this list

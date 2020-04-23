@@ -257,8 +257,10 @@ struct CompoundFlag
 	};
 };
 
-PX_COMPILE_TIME_ASSERT(PxQueryFlag::eSTATIC & CompoundFlag::STATIC_COMPOUND);
-PX_COMPILE_TIME_ASSERT(PxQueryFlag::eDYNAMIC & CompoundFlag::DYNAMIC_COMPOUND);
+PX_COMPILE_TIME_ASSERT(PxU32(PxQueryFlag::eSTATIC) & PxU32(CompoundFlag::STATIC_COMPOUND)
+);
+PX_COMPILE_TIME_ASSERT(PxU32(PxQueryFlag::eDYNAMIC) & PxU32(CompoundFlag::DYNAMIC_COMPOUND)
+);
 
 //////////////////////////////////////////////////////////////////////////
 /**

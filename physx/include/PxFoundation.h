@@ -34,7 +34,7 @@
   @{
 */
 
-#include "foundation/Px.h"
+#include <foundation/Px.h>
 #include "foundation/PxErrors.h"
 #include "foundation/PxFoundationConfig.h"
 

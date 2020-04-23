@@ -57,23 +57,23 @@ struct PxPvdOnlyProperties
 		PxScene_SimulateElapsedTime,
 #define DEFINE_ENUM_RANGE( stem, count ) \
 	stem##Begin, \
-	stem##End = stem##Begin + count
+	stem##End = PxU32(stem##Begin) + PxU32(count)
 
 		//I can't easily add up the number of required property entries, but it is large due to the below
 		//geometry count squared properties.  Thus I punt and allocate way more than I need right now.
 		DEFINE_ENUM_RANGE( PxScene_SimulationStatistics, 1000 ),
-		DEFINE_ENUM_RANGE( PxSceneDesc_Limits, PxPropertyInfoName::PxSceneLimits_PropertiesStop - PxPropertyInfoName::PxSceneLimits_PropertiesStart ),
-		DEFINE_ENUM_RANGE( PxSimulationStatistics_NumShapes, PxGeometryType::eGEOMETRY_COUNT ),
-		DEFINE_ENUM_RANGE( PxSimulationStatistics_NumDiscreteContactPairs, PxGeometryType::eGEOMETRY_COUNT * PxGeometryType::eGEOMETRY_COUNT ),
-		DEFINE_ENUM_RANGE( PxSimulationStatistics_NumModifiedContactPairs, PxGeometryType::eGEOMETRY_COUNT * PxGeometryType::eGEOMETRY_COUNT ),
-		DEFINE_ENUM_RANGE( PxSimulationStatistics_NumSweptIntegrationPairs, PxGeometryType::eGEOMETRY_COUNT * PxGeometryType::eGEOMETRY_COUNT ),
-		DEFINE_ENUM_RANGE( PxSimulationStatistics_NumTriggerPairs, PxGeometryType::eGEOMETRY_COUNT * PxGeometryType::eGEOMETRY_COUNT ),
+		DEFINE_ENUM_RANGE( PxSceneDesc_Limits, PxU32(PxPropertyInfoName::PxSceneLimits_PropertiesStop) - PxU32(PxPropertyInfoName::PxSceneLimits_PropertiesStart) ),
+		DEFINE_ENUM_RANGE( PxSimulationStatistics_NumShapes, PxU32(PxGeometryType::eGEOMETRY_COUNT) ),
+		DEFINE_ENUM_RANGE( PxSimulationStatistics_NumDiscreteContactPairs, PxU32(PxGeometryType::eGEOMETRY_COUNT) * PxU32(PxGeometryType::eGEOMETRY_COUNT) ),
+		DEFINE_ENUM_RANGE( PxSimulationStatistics_NumModifiedContactPairs, PxU32(PxGeometryType::eGEOMETRY_COUNT) * PxU32(PxGeometryType::eGEOMETRY_COUNT) ),
+		DEFINE_ENUM_RANGE( PxSimulationStatistics_NumSweptIntegrationPairs, PxU32(PxGeometryType::eGEOMETRY_COUNT) * PxU32(PxGeometryType::eGEOMETRY_COUNT) ),
+		DEFINE_ENUM_RANGE( PxSimulationStatistics_NumTriggerPairs, PxU32(PxGeometryType::eGEOMETRY_COUNT) * PxU32(PxGeometryType::eGEOMETRY_COUNT) ),
 		DEFINE_ENUM_RANGE( PxRigidDynamic_SolverIterationCounts, 2 ),
  		DEFINE_ENUM_RANGE( PxArticulation_SolverIterationCounts, 2 ),
 		DEFINE_ENUM_RANGE( PxArticulationJoint_SwingLimit, 2 ),
 		DEFINE_ENUM_RANGE( PxArticulationJoint_TwistLimit, 2 ),
-		DEFINE_ENUM_RANGE( PxConvexMeshGeometry_Scale, PxPropertyInfoName::PxMeshScale_PropertiesStop - PxPropertyInfoName::PxMeshScale_PropertiesStart ),
-		DEFINE_ENUM_RANGE( PxTriangleMeshGeometry_Scale, PxPropertyInfoName::PxMeshScale_PropertiesStop - PxPropertyInfoName::PxMeshScale_PropertiesStart ),
+		DEFINE_ENUM_RANGE( PxConvexMeshGeometry_Scale, PxU32(PxPropertyInfoName::PxMeshScale_PropertiesStop) - PxU32(PxPropertyInfoName::PxMeshScale_PropertiesStart) ),
+		DEFINE_ENUM_RANGE( PxTriangleMeshGeometry_Scale, PxU32(PxPropertyInfoName::PxMeshScale_PropertiesStop) - PxU32(PxPropertyInfoName::PxMeshScale_PropertiesStart) ),
 
 		LastPxPvdOnlyProperty
 	};

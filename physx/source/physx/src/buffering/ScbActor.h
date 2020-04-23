@@ -188,7 +188,7 @@ PX_INLINE void Actor::syncState()
 //		syncClientBehaviorFlags();
 	}
 #else
-	if(flags & (Buf::BF_ActorFlags|Buf::BF_DominanceGroup/*|Buf::BF_ClientBehaviorFlags*/))
+	if(flags & (PxU32(Buf::BF_ActorFlags)|PxU32(Buf::BF_DominanceGroup)/*|Buf::BF_ClientBehaviorFlags*/))
 	{
 		Core& core = getActorCore();
 		const Buf& buffer = *reinterpret_cast<const Buf*>(getStream());
